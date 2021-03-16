@@ -7,6 +7,7 @@ import com.zhuanye.wiki.mapper.DemoMapper;
 import com.zhuanye.wiki.mapper.EbookMapper;
 import com.zhuanye.wiki.req.EbookReq;
 import com.zhuanye.wiki.resp.EbookResp;
+import com.zhuanye.wiki.util.CopyUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -24,12 +25,13 @@ public class EbookService {
         EbookExample.Criteria criteria = ebookExample.createCriteria();
         criteria.andNameLike("%"+ req.getName() +"%");
         List<Ebook> eBookList=ebookMapper.selectByExample(ebookExample);
-        List<EbookResp> respList=new ArrayList<>();
-        for (Ebook ebook : eBookList) {
-            EbookResp ebookResp = new EbookResp();
-            BeanUtils.copyProperties(ebook,ebookResp);
-            respList.add(ebookResp);
-        }
-        return respList;
+//        List<EbookResp> respList=new ArrayList<>();
+//        for (Ebook ebook : eBookList) {
+////            EbookResp ebookResp = new EbookResp();
+////            BeanUtils.copyProperties(ebook,ebookResp);
+//            EbookResp ebookResp=CopyUtil.copy(ebook,EbookResp.class);
+//        }
+        List<EbookResp> list = CopyUtil.copyList(eBookList, EbookResp.class);
+        return list;
     }
 }

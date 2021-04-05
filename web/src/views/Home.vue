@@ -63,7 +63,6 @@
     <a-layout-content
       :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
   >
-<!--      :pagination="pagination"  分页-->
       <a-list item-layout="vertical" size="large" :grid="{ gutter: 20, column: 3 }" :data-source="ebooks">
         <template #renderItem="{ item }">
           <a-list-item key="item.name">
@@ -111,8 +110,8 @@ export default defineComponent({
     const ebooks = ref();
     const ebooks1 = reactive({books: []});
     onMounted(() => {
-      console.log("onMounted111");
-      axios.get(process.env.VUE_APP_SERVER+"/ebook/list").then((response) => {
+      console.log("onMounted222");
+      axios.get("/ebook/list").then((response) => {
         const data = response.data;
         ebooks.value = data.content;
         ebooks1.books = data.content;

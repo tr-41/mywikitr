@@ -14,9 +14,9 @@
         <template #cover="{ text: cover }">
           <img v-if="cover" :src="cover" alt="avatar" />
         </template>
-        <template v-slot:action="{ text, record }">
+        <template v-slot:action="{text:record}">
           <a-space size="small">
-            <a-button type="primary" @click="edit(record)">
+            <a-button type="primary">
               编辑
             </a-button>
             <a-popconfirm
@@ -76,7 +76,7 @@ export default defineComponent({
     const ebooks = ref();
     const pagination = ref({
       current: 1,
-      pageSize: 10,
+      pageSize: 4,
       total: 0
     });
     const loading = ref(false);
@@ -125,7 +125,6 @@ export default defineComponent({
         params: {
           page: params.page,
           size: params.size,
-          name: param.value.name
         }
       }).then((response) => {
         loading.value = false;
@@ -153,10 +152,11 @@ export default defineComponent({
       });
     };
 
-    const level1 =  ref();
-    let categorys: any;
     onMounted(() => {
-      handleQuery({});
+      handleQuery({
+        page:1,
+        size:pagination.value.pageSize
+      });
     });
 
     return {

@@ -14,9 +14,9 @@
         <template #cover="{ text: cover }">
           <img v-if="cover" :src="cover" alt="avatar" />
         </template>
-        <template v-slot:action="{text:record}">
+        <template v-slot:action="{text,record}">
           <a-space size="small">
-            <a-button type="primary">
+            <a-button type="primary" @click="edit(record)">
               编辑
             </a-button>
             <a-popconfirm
@@ -152,6 +152,48 @@ export default defineComponent({
       });
     };
 
+    // -------- 表单 ---------
+    /**
+     * 数组，[100, 101]对应：前端开发 / Vue
+     */
+    const categoryIds = ref();
+    const ebook = ref();
+    const modalVisible = ref(false);
+    const modalLoading = ref(false);
+    const handleModalOk = () => {
+      modalLoading.value = true;
+      setTimeout(()=>{
+      modalVisible.value=false;
+      modalLoading.value=false;},2000);
+    }
+      // ebook.value.category1Id = categoryIds.value[0];
+      // ebook.value.category2Id = categoryIds.value[1];
+    //   axios.post("/ebook/save", ebook.value).then((response) => {
+    //     modalLoading.value = false;
+    //     const data = response.data; // data = commonResp
+    //     if (data.success) {
+    //       modalVisible.value = false;
+    //
+    //       // 重新加载列表
+    //       handleQuery({
+    //         page: pagination.value.current,
+    //         size: pagination.value.pageSize,
+    //       });
+    //     } else {
+    //       message.error(data.message);
+    //     }
+    //   });
+    // };
+
+    /**
+     * 编辑
+     */
+    const edit = (record: any) => {
+      modalVisible.value = true;
+      ebook.value=record
+    };
+
+
     onMounted(() => {
       handleQuery({
         page:1,
@@ -166,6 +208,13 @@ export default defineComponent({
       columns,
       loading,
       handleTableChange,
+
+      edit,
+      ebook,
+      modalVisible,
+      modalLoading,
+      handleModalOk,
+      categoryIds,
     }
   }
 });

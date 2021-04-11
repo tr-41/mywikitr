@@ -2,24 +2,20 @@ package com.zhuanye.wiki.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.zhuanye.wiki.domain.Demo;
 import com.zhuanye.wiki.domain.Ebook;
 import com.zhuanye.wiki.domain.EbookExample;
-import com.zhuanye.wiki.mapper.DemoMapper;
 import com.zhuanye.wiki.mapper.EbookMapper;
-import com.zhuanye.wiki.req.EbookReq;
-import com.zhuanye.wiki.resp.EbookResp;
+import com.zhuanye.wiki.req.EbookQueryReq;
+import com.zhuanye.wiki.req.EbookSaveReq;
+import com.zhuanye.wiki.resp.EbookQueryResp;
 import com.zhuanye.wiki.resp.PageResp;
 import com.zhuanye.wiki.util.CopyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,7 +25,7 @@ public class EbookService {
     @Resource
     private EbookMapper ebookMapper;
 
-    public PageResp<EbookResp> list(EbookReq req){
+    public PageResp<EbookQueryResp> list(EbookQueryReq req){
         EbookExample ebookExample = new EbookExample();
         EbookExample.Criteria criteria = ebookExample.createCriteria();
         if(!ObjectUtils.isEmpty(req.getName())) {
@@ -49,10 +45,20 @@ public class EbookService {
 //            EbookResp ebookResp=CopyUtil.copy(ebook,EbookResp.class);
 //        }
 
-        List<EbookResp> list = CopyUtil.copyList(eBookList, EbookResp.class);
-        PageResp<EbookResp> pageResp=new PageResp();
+        List<EbookQueryResp> list = CopyUtil.copyList(eBookList, EbookQueryResp.class);
+        PageResp<EbookQueryResp> pageResp=new PageResp();
         pageResp.setTotal(pageInfo.getTotal());
         pageResp.setList(list);
         return pageResp;
+    }
+
+    public void save(EbookSaveReq req){
+        Ebook ebook=CopyUtil.copy(req,Ebook.class);
+        if(ObjectUtils.isEmpty(req.getId())){
+            //新增
+            ebookMapper.insert(ebook);
+        }else {
+            ebookMapper.updateByPrimaryKey(ebook);
+        }
     }
 }

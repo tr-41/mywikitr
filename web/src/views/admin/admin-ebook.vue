@@ -202,6 +202,24 @@ export default defineComponent({
       ebook.value={};
     };
 
+    /**
+     * 删除
+     */
+    const handleDelete = (id: number) => {
+      axios.delete("/ebook/delete/" + id).then((response) => {
+        const data = response.data; // data = commonResp
+        if (data.success) {
+          // 重新加载列表
+          handleQuery({
+            page: pagination.value.current,
+            size: pagination.value.pageSize,
+          });
+        } else {
+          message.error(data.message);
+        }
+      });
+    };
+
 
     onMounted(() => {
       handleQuery({
@@ -220,6 +238,8 @@ export default defineComponent({
 
       add,
       edit,
+      handleDelete,
+
       ebook,
       modalVisible,
       modalLoading,

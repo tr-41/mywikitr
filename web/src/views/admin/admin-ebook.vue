@@ -32,9 +32,9 @@
         <template #cover="{ text: cover }">
           <img v-if="cover" :src="cover" alt="avatar" />
         </template>
-<!--        <template v-slot:category="{ text, record }">-->
-<!--          <span>{{ getCategoryName(record.category1Id) }} / {{ getCategoryName(record.category2Id) }}</span>-->
-<!--        </template>-->
+        <template v-slot:category="{ text, record }">
+          <span>{{ getCategoryName(record.category1Id) }} / {{ getCategoryName(record.category2Id) }}</span>
+        </template>
         <template v-slot:action="{ text, record }">
           <a-space size="small">
 <!--            <router-link :to="'/admin/doc?ebookId=' + record.id">-->
@@ -241,54 +241,48 @@ export default defineComponent({
     };
 
     const level1 =  ref();
-    //let categorys: any;
+    let categorys: any;
     /**
      * 查询所有分类
      **/
-    // const handleQueryCategory = () => {
-    //   loading.value = true;
-    //   axios.get("/category/all").then((response) => {
-    //     loading.value = false;
-    //     const data = response.data;
-    //     if (data.success) {
-    //       categorys = data.content;
-    //       console.log("原始数组：", categorys);
-    //
-    //       level1.value = [];
-    //       level1.value = Tool.array2Tree(categorys, 0);
-    //       console.log("树形结构：", level1.value);
-    //
-    //       // 加载完分类后，再加载电子书，否则如果分类树加载很慢，则电子书渲染会报错
-    //       handleQuery({
-    //         page: 1,
-    //         size: pagination.value.pageSize,
-    //       });
-    //     } else {
-    //       message.error(data.message);
-    //     }
-    //   });
-    // };
+    const handleQueryCategory = () => {
+      loading.value = true;
+      axios.get("/category/all").then((response) => {
+        loading.value = false;
+        const data = response.data;
+        if (data.success) {
+          categorys = data.content;
+          console.log("原始数组：", categorys);
 
-    // const getCategoryName = (cid: number) => {
-    //   // console.log(cid)
-    //   let result = "";
-    //   categorys.forEach((item: any) => {
-    //     if (item.id === cid) {
-    //       // return item.name; // 注意，这里直接return不起作用
-    //       result = item.name;
-    //     }
-    //   });
-    //   return result;
-    // };
+          level1.value = [];
+          level1.value = Tool.array2Tree(categorys, 0);
+          console.log("树形结构：", level1.value);
 
-    // onMounted(() => {
-    //   handleQueryCategory();
-    // });
-    onMounted(() => {
-      handleQuery({
-        page:1,
-        size:pagination.value.pageSize
+          // 加载完分类后，再加载电子书，否则如果分类树加载很慢，则电子书渲染会报错
+          handleQuery({
+            page: 1,
+            size: pagination.value.pageSize,
+          });
+        } else {
+          message.error(data.message);
+        }
       });
+    };
+
+    const getCategoryName = (cid: number) => {
+      // console.log(cid)
+      let result = "";
+      categorys.forEach((item: any) => {
+        if (item.id === cid) {
+          // return item.name; // 注意，这里直接return不起作用
+          result = item.name;
+        }
+      });
+      return result;
+    };
+
+    onMounted(() => {
+      handleQueryCategory();
     });
 
     return {
@@ -299,6 +293,7 @@ export default defineComponent({
       loading,
       handleTableChange,
       handleQuery,
+      getCategoryName,
 
       edit,
       add,

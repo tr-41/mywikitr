@@ -120,3 +120,13 @@ create table `ebook_snapshot` (
   primary key (`id`),
   unique key `ebook_id_date_unique` (`ebook_id`, `date`)
 ) engine=innodb default charset=utf8mb4 comment='电子书快照表';
+
+-- 电子书快照表
+drop table if exists `doc_edit`;
+create table `doc_edit` (
+    `user_id` bigint not null comment '用户id',
+    `word_id` bigint not null comment '文档id',
+    `username` varchar(50) not null comment '用户昵称',
+     primary key (`user_id`,`word_id`),
+     unique key `user_id_word_id_unique` (`user_id`, `word_id`)
+) engine=innodb default charset=utf8mb4 comment='电子书快照表';

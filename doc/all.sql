@@ -121,12 +121,23 @@ create table `ebook_snapshot` (
   unique key `ebook_id_date_unique` (`ebook_id`, `date`)
 ) engine=innodb default charset=utf8mb4 comment='电子书快照表';
 
--- 电子书快照表
+-- 用户编辑文档表
 drop table if exists `doc_edit`;
 create table `doc_edit` (
     `user_id` bigint not null comment '用户id',
     `word_id` bigint not null comment '文档id',
-    `username` varchar(50) not null comment '用户昵称',
+    `username` varchar(50) not null comment '用户名',
+    `wordname` varchar(50) not null comment '文档名',
      primary key (`user_id`,`word_id`),
      unique key `user_id_word_id_unique` (`user_id`, `word_id`)
-) engine=innodb default charset=utf8mb4 comment='电子书快照表';
+) engine=innodb default charset=utf8mb4 comment='用户编辑文档表';
+
+-- 管理员表
+drop table if exists `manager`;
+create table `manager` (
+                        `manager_id` bigint not null comment 'ID',
+                        `name` varchar(50) not null comment '登陆名',
+                        `password` char(32) not null comment '密码',
+                        primary key (`manager_id`),
+                        unique key `name_unique` (`name`)
+) engine=innodb default charset=utf8mb4 comment='管理员表';

@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zhuanye.wiki.mapper.UserMapper">
-  <resultMap id="BaseResultMap" type="com.zhuanye.wiki.domain.User">
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="login_name" jdbcType="VARCHAR" property="loginName" />
+<mapper namespace="com.zhuanye.wiki.mapper.ManagerMapper">
+  <resultMap id="BaseResultMap" type="com.zhuanye.wiki.domain.Manager">
+    <id column="manager_id" jdbcType="BIGINT" property="managerId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="password" jdbcType="CHAR" property="password" />
-    <result column="block" jdbcType="BIT" property="block" />
-    <result column="level" jdbcType="BIT" property="level" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -68,15 +65,15 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, login_name, `name`, `password`, block, `level`
+    manager_id, `name`, `password`
   </sql>
-  <select id="selectByExample" parameterType="com.zhuanye.wiki.domain.UserExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.zhuanye.wiki.domain.ManagerExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from user
+    from manager
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -87,33 +84,30 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from user
-    where id = #{id,jdbcType=BIGINT}
+    from manager
+    where manager_id = #{managerId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from user
-    where id = #{id,jdbcType=BIGINT}
+    delete from manager
+    where manager_id = #{managerId,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.zhuanye.wiki.domain.UserExample">
-    delete from user
+  <delete id="deleteByExample" parameterType="com.zhuanye.wiki.domain.ManagerExample">
+    delete from manager
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.zhuanye.wiki.domain.User">
-    insert into user (id, login_name, `name`, 
-      `password`, block, `level`)
-    values (#{id,jdbcType=BIGINT}, #{loginName,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-      #{password,jdbcType=CHAR}, #{block,jdbcType=BIT}, #{level,jdbcType=BIT})
+  <insert id="insert" parameterType="com.zhuanye.wiki.domain.Manager">
+    insert into manager (manager_id, `name`, `password`
+      )
+    values (#{managerId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{password,jdbcType=CHAR}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="com.zhuanye.wiki.domain.User">
-    insert into user
+  <insert id="insertSelective" parameterType="com.zhuanye.wiki.domain.Manager">
+    insert into manager
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="loginName != null">
-        login_name,
+      <if test="managerId != null">
+        manager_id,
       </if>
       <if test="name != null">
         `name`,
@@ -121,19 +115,10 @@
       <if test="password != null">
         `password`,
       </if>
-      <if test="block != null">
-        block,
-      </if>
-      <if test="level != null">
-        `level`,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="loginName != null">
-        #{loginName,jdbcType=VARCHAR},
+      <if test="managerId != null">
+        #{managerId,jdbcType=BIGINT},
       </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
@@ -141,28 +126,19 @@
       <if test="password != null">
         #{password,jdbcType=CHAR},
       </if>
-      <if test="block != null">
-        #{block,jdbcType=BIT},
-      </if>
-      <if test="level != null">
-        #{level,jdbcType=BIT},
-      </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.zhuanye.wiki.domain.UserExample" resultType="java.lang.Long">
-    select count(*) from user
+  <select id="countByExample" parameterType="com.zhuanye.wiki.domain.ManagerExample" resultType="java.lang.Long">
+    select count(*) from manager
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update user
+    update manager
     <set>
-      <if test="record.id != null">
-        id = #{record.id,jdbcType=BIGINT},
-      </if>
-      <if test="record.loginName != null">
-        login_name = #{record.loginName,jdbcType=VARCHAR},
+      <if test="record.managerId != null">
+        manager_id = #{record.managerId,jdbcType=BIGINT},
       </if>
       <if test="record.name != null">
         `name` = #{record.name,jdbcType=VARCHAR},
@@ -170,57 +146,36 @@
       <if test="record.password != null">
         `password` = #{record.password,jdbcType=CHAR},
       </if>
-      <if test="record.block != null">
-        block = #{record.block,jdbcType=BIT},
-      </if>
-      <if test="record.level != null">
-        `level` = #{record.level,jdbcType=BIT},
-      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update user
-    set id = #{record.id,jdbcType=BIGINT},
-      login_name = #{record.loginName,jdbcType=VARCHAR},
+    update manager
+    set manager_id = #{record.managerId,jdbcType=BIGINT},
       `name` = #{record.name,jdbcType=VARCHAR},
-      `password` = #{record.password,jdbcType=CHAR},
-      block = #{record.block,jdbcType=BIT},
-      `level` = #{record.level,jdbcType=BIT}
+      `password` = #{record.password,jdbcType=CHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.zhuanye.wiki.domain.User">
-    update user
+  <update id="updateByPrimaryKeySelective" parameterType="com.zhuanye.wiki.domain.Manager">
+    update manager
     <set>
-      <if test="loginName != null">
-        login_name = #{loginName,jdbcType=VARCHAR},
-      </if>
       <if test="name != null">
         `name` = #{name,jdbcType=VARCHAR},
       </if>
       <if test="password != null">
         `password` = #{password,jdbcType=CHAR},
       </if>
-      <if test="block != null">
-        block = #{block,jdbcType=BIT},
-      </if>
-      <if test="level != null">
-        `level` = #{level,jdbcType=BIT},
-      </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
+    where manager_id = #{managerId,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.zhuanye.wiki.domain.User">
-    update user
-    set login_name = #{loginName,jdbcType=VARCHAR},
-      `name` = #{name,jdbcType=VARCHAR},
-      `password` = #{password,jdbcType=CHAR},
-      block = #{block,jdbcType=BIT},
-      `level` = #{level,jdbcType=BIT}
-    where id = #{id,jdbcType=BIGINT}
+  <update id="updateByPrimaryKey" parameterType="com.zhuanye.wiki.domain.Manager">
+    update manager
+    set `name` = #{name,jdbcType=VARCHAR},
+      `password` = #{password,jdbcType=CHAR}
+    where manager_id = #{managerId,jdbcType=BIGINT}
   </update>
 </mapper>

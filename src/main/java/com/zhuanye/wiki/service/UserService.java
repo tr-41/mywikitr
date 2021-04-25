@@ -137,4 +137,9 @@ public class UserService {
             }
         }
     }
+
+    public User select1(Long id){
+        User user=userMapper.selectByPrimaryKey(id);
+        return user;
+    }
 }

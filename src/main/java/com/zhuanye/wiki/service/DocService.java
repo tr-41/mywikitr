@@ -4,10 +4,12 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zhuanye.wiki.domain.Content;
 import com.zhuanye.wiki.domain.Doc;
+import com.zhuanye.wiki.domain.DocEdit;
 import com.zhuanye.wiki.domain.DocExample;
 import com.zhuanye.wiki.exception.BusinessException;
 import com.zhuanye.wiki.exception.BusinessExceptionCode;
 import com.zhuanye.wiki.mapper.ContentMapper;
+import com.zhuanye.wiki.mapper.DocEditMapper;
 import com.zhuanye.wiki.mapper.DocMapper;
 import com.zhuanye.wiki.mapper.DocMapperCust;
 import com.zhuanye.wiki.req.DocQueryReq;
@@ -21,11 +23,14 @@ import com.zhuanye.wiki.util.SnowFlake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Service
@@ -51,6 +56,15 @@ public class DocService {
     @Resource
     public WsService wsService;
 
+    @Resource
+    private RedisTemplate redisTemplate;
+
+    @Autowired
+    HttpServletRequest request;
+
+    @Resource
+    private DocEditMapper docEditMapper;
+
     public List<DocQueryResp> all(Long ebookId) {
         DocExample docExample = new DocExample();
         docExample.createCriteria().andEbookIdEqualTo(ebookId);
@@ -74,16 +88,6 @@ public class DocService {
         LOG.info("总行数：{}", pageInfo.getTotal());
         LOG.info("总页数：{}", pageInfo.getPages());
 
-        // List<DocResp> respList = new ArrayList<>();
-        // for (Doc doc : docList) {
-        //     // DocResp docResp = new DocResp();
-        //     // BeanUtils.copyProperties(doc, docResp);
-        //     // 对象复制
-        //     DocResp docResp = CopyUtil.copy(doc, DocResp.class);
-        //
-        //     respList.add(docResp);
-        // }
-
         // 列表复制
         List<DocQueryResp> list = CopyUtil.copyList(docList, DocQueryResp.class);
 
@@ -103,15 +107,69 @@ public class DocService {
         Content content = CopyUtil.copy(req, Content.class);
         if (ObjectUtils.isEmpty(req.getId())) {
             // 新增
-            doc.setId(snowFlake.nextId());
+            long id=snowFlake.nextId();
+            doc.setId(id);
             doc.setViewCount(0);
             doc.setVoteCount(0);
             docMapper.insert(doc);
+
+            String token = request.getHeader("token");
+            String string = (String) redisTemplate.opsForValue().get(token);
+            System.out.println("~~~~~~~~~~~~~~~~~~~~~~1"+string);
+            int s=string.indexOf(":");
+            char[] ch=string.toCharArray();
+            String id1="";
+            int i=0;
+            for(s=s+1;s<ch.length;s++){
+                if(Character.isDigit(ch[s])) {
+                    id1 += ch[s];
+                }else{
+                    break;
+                }
+            }
+            String name1="";
+            for(s=s+14;s<ch.length;s++){
+                if(ch[s]!='"'){
+                    name1+=ch[s];
+                }else{
+                    break;
+                }
+            }
+            DocEdit docEdit=new DocEdit(Long.parseLong(id1),id,name1,doc.getName());
+            if((docEditMapper.selectByPrimaryKey(Long.parseLong(id1),doc.getId())==null)){
+                docEditMapper.insert(docEdit);
+            }
 
             content.setId(doc.getId());
             contentMapper.insert(content);
         } else {
             // 更新
+            String token = request.getHeader("token");
+            String string = (String) redisTemplate.opsForValue().get(token);
+            int s=string.indexOf(":");
+            char[] ch=string.toCharArray();
+            String id1="";
+            int i=0;
+            for(s=s+1;s<ch.length;s++){
+                if(Character.isDigit(ch[s])) {
+                    id1 += ch[s];
+                }else{
+                    break;
+                }
+            }
+            String name1="";
+            for(s=s+14;s<ch.length;s++){
+                if(ch[s]!='"'){
+                    name1+=ch[s];
+                }else{
+                    break;
+                }
+            }
+            DocEdit docEdit=new DocEdit( Long.parseLong(id1),doc.getId(),name1,doc.getName());
+
+            if((docEditMapper.selectByPrimaryKey(Long.parseLong(id1),doc.getId())==null)){
+                docEditMapper.insert(docEdit);
+            }
             docMapper.updateByPrimaryKey(doc);
             int count = contentMapper.updateByPrimaryKeyWithBLOBs(content);
             if (count == 0) {

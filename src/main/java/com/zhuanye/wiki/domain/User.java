@@ -9,6 +9,10 @@ public class User {
 
     private String password;
 
+    private Boolean block;
+
+    private Boolean level;
+
     public Long getId() {
         return id;
     }
@@ -41,6 +45,22 @@ public class User {
         this.password = password;
     }
 
+    public Boolean getBlock() {
+        return block;
+    }
+
+    public void setBlock(Boolean block) {
+        this.block = block;
+    }
+
+    public Boolean getLevel() {
+        return level;
+    }
+
+    public void setLevel(Boolean level) {
+        this.level = level;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -51,6 +71,8 @@ public class User {
         sb.append(", loginName=").append(loginName);
         sb.append(", name=").append(name);
         sb.append(", password=").append(password);
+        sb.append(", block=").append(block);
+        sb.append(", level=").append(level);
         sb.append("]");
         return sb.toString();
     }

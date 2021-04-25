@@ -24,7 +24,7 @@
       <a-table
         :columns="columns"
         :row-key="record => record.id"
-        :data-source="users"
+        :data-source="managers"
         :pagination="pagination"
         :loading="loading"
         @change="handleTableChange"
@@ -54,20 +54,17 @@
   </a-layout>
 
   <a-modal
-    title="用户表单"
+    title="管理员表单"
     v-model:visible="modalVisible"
     :confirm-loading="modalLoading"
     @ok="handleModalOk"
   >
-    <a-form :model="user" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+    <a-form :model="manager" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
       <a-form-item label="登陆名">
-        <a-input v-model:value="user.loginName" :disabled="!!user.id"/>
+        <a-input v-model:value="manager.loginName" :disabled="!!manager.id"/>
       </a-form-item>
-      <a-form-item label="昵称">
-        <a-input v-model:value="user.name" />
-      </a-form-item>
-      <a-form-item label="密码" v-show="!user.id">
-        <a-input v-model:value="user.password"/>
+      <a-form-item label="密码" v-show="!manager.id">
+        <a-input v-model:value="manager.password"/>
       </a-form-item>
     </a-form>
   </a-modal>
@@ -78,9 +75,9 @@
     :confirm-loading="resetModalLoading"
     @ok="handleResetModalOk"
   >
-    <a-form :model="user" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+    <a-form :model="manager" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
       <a-form-item label="新密码">
-        <a-input v-model:value="user.password"/>
+        <a-input v-model:value="manager.password"/>
       </a-form-item>
     </a-form>
   </a-modal>
@@ -96,11 +93,11 @@
   declare let KEY: any;
 
   export default defineComponent({
-    name: 'AdminUser',
+    name: 'AdminManager',
     setup() {
       const param = ref();
       param.value = {};
-      const users = ref();
+      const managers = ref();
       const pagination = ref({
         current: 1,
         pageSize: 10,
@@ -109,10 +106,6 @@
       const loading = ref(false);
 
       const columns = [
-        {
-          title: '登陆名',
-          dataIndex: 'loginName'
-        },
         {
           title: '名称',
           dataIndex: 'name'
@@ -134,8 +127,8 @@
       const handleQuery = (params: any) => {
         loading.value = true;
         // 如果不清空现有数据，则编辑保存重新加载数据后，再点编辑，则列表显示的还是编辑前的数据
-        users.value = [];
-        axios.get("/user/list", {
+        managers.value = [];
+        axios.get("/manager/list", {
           params: {
             page: params.page,
             size: params.size,
@@ -145,7 +138,7 @@
           loading.value = false;
           const data = response.data;
           if (data.success) {
-            users.value = data.content.list;
+            managers.value = data.content.list;
 
             // 重置分页按钮
             pagination.value.current = params.page;
@@ -168,14 +161,14 @@
       };
 
       // -------- 表单 ---------
-      const user = ref();
+      const manager = ref();
       const modalVisible = ref(false);
       const modalLoading = ref(false);
       const handleModalOk = () => {
         modalLoading.value = true;
 
-        user.value.password = hexMd5(user.value.password + KEY);
-        axios.post("/user/save", user.value).then((response) => {
+        manager.value.password = hexMd5(manager.value.password + KEY);
+        axios.post("/manager/save", manager.value).then((response) => {
           modalLoading.value = false;
           const data = response.data; // data = commonResp
           if (data.success) {
@@ -197,7 +190,7 @@
        */
       const edit = (record: any) => {
         modalVisible.value = true;
-        user.value = Tool.copy(record);
+        manager.value = Tool.copy(record);
       };
 
       /**
@@ -205,11 +198,11 @@
        */
       const add = () => {
         modalVisible.value = true;
-        user.value = {};
+        manager.value = {};
       };
 
       const handleDelete = (id: number) => {
-        axios.delete("/user/delete/" + id).then((response) => {
+        axios.delete("/manager/delete/" + id).then((response) => {
           const data = response.data; // data = commonResp
           if (data.success) {
             // 重新加载列表
@@ -229,9 +222,9 @@
       const handleResetModalOk = () => {
         resetModalLoading.value = true;
 
-        user.value.password = hexMd5(user.value.password + KEY);
+        manager.value.password = hexMd5(manager.value.password + KEY);
 
-        axios.post("/user/reset-password", user.value).then((response) => {
+        axios.post("/manager/reset-password", manager.value).then((response) => {
           resetModalLoading.value = false;
           const data = response.data; // data = commonResp
           if (data.success) {
@@ -253,8 +246,8 @@
        */
       const resetPassword = (record: any) => {
         resetModalVisible.value = true;
-        user.value = Tool.copy(record);
-        user.value.password = null;
+        manager.value = Tool.copy(record);
+        manager.value.password = null;
       };
 
       onMounted(() => {
@@ -266,7 +259,7 @@
 
       return {
         param,
-        users,
+        managers,
         pagination,
         columns,
         loading,
@@ -276,7 +269,7 @@
         edit,
         add,
 
-        user,
+        manager,
         modalVisible,
         modalLoading,
         handleModalOk,

@@ -13,9 +13,6 @@
         <div>
           <b>小组成员：
             <a href="https://coding.imooc.com/class/416.html" target="_blank">
-              高璨
-            </a>
-            <a href="https://coding.imooc.com/class/416.html" target="_blank">
               谭睿
             </a>
             <a href="https://coding.imooc.com/class/416.html" target="_blank">
@@ -29,6 +26,9 @@
             </a>
             <a href="https://coding.imooc.com/class/416.html" target="_blank">
               金睿睿
+            </a>
+            <a href="https://coding.imooc.com/class/416.html" target="_blank">
+              高璨
             </a>
           </b>
         </div>

@@ -18,6 +18,9 @@
       <a-menu-item key="/admin/category" :style="user.id? {} : {display:'none'}">
         <router-link to="/admin/category">分类管理</router-link>
       </a-menu-item>
+      <a-menu-item key="/admin/tanrui" :style="user.id? {} : {display:'none'}">
+        <router-link to="/admin/tanrui">谭睿的模块</router-link>
+      </a-menu-item>
       <a-menu-item key="/about">
         <router-link to="/about">关于我们</router-link>
       </a-menu-item>

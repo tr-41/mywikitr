@@ -110,13 +110,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, createVNode } from 'vue';
+import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
 import axios from 'axios';
 import {message, Modal} from 'ant-design-vue';
 import {Tool} from "@/util/tool";
 import {useRoute} from "vue-router";
 import ExclamationCircleOutlined from "@ant-design/icons-vue/ExclamationCircleOutlined";
 import E from 'wangeditor'
+import store from "@/store";
+
+declare let hexMd5: any;
+declare let KEY: any;
 
 export default defineComponent({
   name: 'AdminDoc',
@@ -197,6 +201,7 @@ export default defineComponent({
     doc.value = {
       ebookId: route.query.ebookId
     };
+
     const modalVisible = ref(false);
     const modalLoading = ref(false);
     const editor = new E('#content');

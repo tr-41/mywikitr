@@ -107,6 +107,7 @@
 <script lang="ts">
   import { defineComponent, ref, onMounted } from 'vue'
   import axios from 'axios';
+  import {message} from "ant-design-vue";
 
   declare let echarts: any;
 
@@ -133,6 +134,8 @@
             // todayViewIncreaseRate：今日预计增长率
             statistic.value.todayViewIncreaseRate = (statistic.value.todayViewIncrease - statisticResp[0].viewIncrease) / statisticResp[0].viewIncrease * 100;
             statistic.value.todayViewIncreaseRateAbs = Math.abs(statistic.value.todayViewIncreaseRate);
+          }else{
+            message.error(data.message);
           }
         });
       };

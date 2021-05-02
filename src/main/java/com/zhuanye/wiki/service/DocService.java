@@ -115,7 +115,6 @@ public class DocService {
 
             String token = request.getHeader("token");
             String string = (String) redisTemplate.opsForValue().get(token);
-            System.out.println("~~~~~~~~~~~~~~~~~~~~~~1"+string);
             int s=string.indexOf(":");
             char[] ch=string.toCharArray();
             String id1="";

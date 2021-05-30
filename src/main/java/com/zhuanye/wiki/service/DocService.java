@@ -2,16 +2,10 @@ package com.zhuanye.wiki.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.zhuanye.wiki.domain.Content;
-import com.zhuanye.wiki.domain.Doc;
-import com.zhuanye.wiki.domain.DocEdit;
-import com.zhuanye.wiki.domain.DocExample;
+import com.zhuanye.wiki.domain.*;
 import com.zhuanye.wiki.exception.BusinessException;
 import com.zhuanye.wiki.exception.BusinessExceptionCode;
-import com.zhuanye.wiki.mapper.ContentMapper;
-import com.zhuanye.wiki.mapper.DocEditMapper;
-import com.zhuanye.wiki.mapper.DocMapper;
-import com.zhuanye.wiki.mapper.DocMapperCust;
+import com.zhuanye.wiki.mapper.*;
 import com.zhuanye.wiki.req.DocQueryReq;
 import com.zhuanye.wiki.req.DocSaveReq;
 import com.zhuanye.wiki.resp.DocQueryResp;
@@ -64,6 +58,9 @@ public class DocService {
 
     @Resource
     private DocEditMapper docEditMapper;
+
+    @Resource
+    private DocDeleteMapper docDeleteMapper;
 
     public List<DocQueryResp> all(Long ebookId) {
         DocExample docExample = new DocExample();
@@ -178,6 +175,32 @@ public class DocService {
     }
 
     public void delete(Long id) {
+        String token = request.getHeader("token");
+        String string = (String) redisTemplate.opsForValue().get(token);
+        int s=string.indexOf(":");
+        char[] ch=string.toCharArray();
+        String id1="";
+        int i=0;
+        for(s=s+1;s<ch.length;s++){
+            if(Character.isDigit(ch[s])) {
+                id1 += ch[s];
+            }else{
+                break;
+            }
+        }
+        String name1="";
+        for(s=s+14;s<ch.length;s++){
+            if(ch[s]!='"'){
+                name1+=ch[s];
+            }else{
+                break;
+            }
+        }
+        Doc doc=docMapper.selectByPrimaryKey(id);
+        DocDelete docDelete=new DocDelete( Long.parseLong(id1),doc.getId(),name1,doc.getName());
+        if((docDeleteMapper.selectByPrimaryKey(Long.parseLong(id1),doc.getId())==null)){
+            docDeleteMapper.insert(docDelete);
+        }
         docMapper.deleteByPrimaryKey(id);
     }
 
@@ -185,6 +208,35 @@ public class DocService {
         DocExample docExample = new DocExample();
         DocExample.Criteria criteria = docExample.createCriteria();
         criteria.andIdIn(ids);
+
+        String token = request.getHeader("token");
+        String string = (String) redisTemplate.opsForValue().get(token);
+        int s=string.indexOf(":");
+        char[] ch=string.toCharArray();
+        String id1="";
+        int i=0;
+        for(s=s+1;s<ch.length;s++){
+            if(Character.isDigit(ch[s])) {
+                id1 += ch[s];
+            }else{
+                break;
+            }
+        }
+        String name1="";
+        for(s=s+14;s<ch.length;s++){
+            if(ch[s]!='"'){
+                name1+=ch[s];
+            }else{
+                break;
+            }
+        }
+        for(int aa=0;aa<ids.size();aa++){
+            Doc doc=docMapper.selectByPrimaryKey(Long.parseLong(ids.get(aa)));
+            DocDelete docDelete=new DocDelete( Long.parseLong(id1),doc.getId(),name1,doc.getName());
+            if((docDeleteMapper.selectByPrimaryKey(Long.parseLong(id1),doc.getId())==null)){
+                docDeleteMapper.insert(docDelete);
+            }
+        }
         docMapper.deleteByExample(docExample);
     }
 

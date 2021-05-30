@@ -144,9 +144,30 @@ public class DocController {
     @GetMapping("/find-content/{id}")
     public CommonResp findContent(@PathVariable Long id) {
         CommonResp<String> resp = new CommonResp<>();
-        String content = docService.findContent(id);
-        resp.setContent(content);
-        return resp;
+
+        String token = request.getHeader("token");
+        String string = (String) redisTemplate.opsForValue().get(token);
+        int s=string.indexOf(":");
+        char[] ch=string.toCharArray();
+        String id1="";
+        int i=0;
+        for(s=s+1;s<ch.length;s++){
+            if(Character.isDigit(ch[s])) {
+                id1 += ch[s];
+            }else{
+                break;
+            }
+        }
+        User user=userService.select1(Long.parseLong(id1));
+        if(user.getBlock()==true) {
+            resp.setSuccess(false);
+            resp.setMessage("对不起！您为系统拉黑用户！已阻止您本次操作！");
+            return resp;
+        }else {
+            String content = docService.findContent(id);
+            resp.setContent(content);
+            return resp;
+        }
     }
 
     @GetMapping("/vote/{id}")

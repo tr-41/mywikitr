@@ -126,6 +126,7 @@ export default defineComponent({
   name: 'AdminDoc',
   setup() {
     const route = useRoute();
+    //打印日志
     console.log("路由：", route);
     console.log("route.path：", route.path);
     console.log("route.query：", route.query);
@@ -135,6 +136,7 @@ export default defineComponent({
     console.log("route.meta：", route.meta);
     const param = ref();
     param.value = {};
+    //获得当前文档
     const docs = ref();
     const loading = ref(false);
     // 因为树选择组件的属性状态，会随当前编辑的节点而变化，所以单独声明一个响应式变量
@@ -173,11 +175,13 @@ export default defineComponent({
      **/
     const handleQuery = () => {
       loading.value = true;
-      // 如果不清空现有数据，则编辑保存重新加载数据后，再点编辑，则列表显示的还是编辑前的数据
+      // 清空数据，因为如果不清空现有数据，则编辑保存重新加载数据后，再点编辑，则列表显示的还是编辑前的数据
       level1.value = [];
       axios.get("/doc/all/" + route.query.ebookId).then((response) => {
         loading.value = false;
+        //获得返回值
         const data = response.data;
+        //如果data.success为true，表示查询成功，即显示出文档信息
         if (data.success) {
           docs.value = data.content;
           console.log("原始数组：", docs.value);
@@ -197,28 +201,40 @@ export default defineComponent({
     };
 
     // -------- 表单 ---------
+    //获得当前文档
     const doc = ref();
+    //获得当前文档的ebookId
     doc.value = {
       ebookId: route.query.ebookId
     };
 
+    //设置表单不可见
     const modalVisible = ref(false);
     const modalLoading = ref(false);
+    //富文本编辑器的内容为id为content的div内的值
     const editor = new E('#content');
     editor.config.zIndex = 0;
 
+    //保存文档信息
     const handleSave = () => {
+      //表单可见
       modalLoading.value = true;
+      //设置文档
       doc.value.content = editor.txt.html();
+      //集成axios发送请求，参数是doc.value
       axios.post("/doc/save", doc.value).then((response) => {
+        //表单不可见
         modalLoading.value = false;
+        //获得返回值
         const data = response.data; // data = commonResp
+        //如果data.success为true，表示保存成功
         if (data.success) {
           // modalVisible.value = false;
           message.success("保存成功！");
 
           // 重新加载列表
           handleQuery();
+          //如果data.success为false,表示查询失败，显示出错误信息
         } else {
           message.error(data.message);
         }
@@ -295,10 +311,13 @@ export default defineComponent({
      * 内容查询
      **/
     const handleQueryContent = () => {
+      //集成axios发送请求
       axios.get("/doc/find-content/" + doc.value.id).then((response) => {
         const data = response.data;
+        //如果data.success为true，表示查询成功，即显示出文档信息
         if (data.success) {
           editor.txt.html(data.content)
+          //如果data.success为false,表示查询失败，显示出错误信息
         } else {
           message.error(data.message);
         }
@@ -329,7 +348,9 @@ export default defineComponent({
     const add = () => {
       // 清空富文本框
       editor.txt.html("");
+      //显示表单
       modalVisible.value = true;
+      //设置doc.value等于该文档的ebookId
       doc.value = {
         ebookId: route.query.ebookId
       };
@@ -340,24 +361,32 @@ export default defineComponent({
       treeSelectData.value.unshift({id: 0, name: '无'});
     };
 
+    //删除文档
     const handleDelete = (id: number) => {
       // console.log(level1, level1.value, id)
       // 清空数组，否则多次删除时，数组会一直增加
       deleteIds.length = 0;
       deleteNames.length = 0;
+      //获得待删除文档的id
       getDeleteIds(level1.value, id);
+      //弹出提醒，提醒用户删除操作不可恢复
       Modal.confirm({
         title: '重要提醒',
         icon: createVNode(ExclamationCircleOutlined),
         content: '将删除：【' + deleteNames.join("，") + "】删除后不可恢复，确认删除？",
+        //如果用户点击了确认删除，则执行以下函数
         onOk() {
           // console.log(ids)
+          //集成axios发送删除请求，携带参数是待删除文档的id
           axios.delete("/doc/delete/" + deleteIds.join(",")).then((response) => {
             const data = response.data; // data = commonResp
+            //如果data.success为true，表示删除成功，则重新加载文档列表
             if (data.success) {
               // 重新加载列表
               handleQuery();
-            } else {
+              message.success("删除文档成功");
+              //如果data.success为false,表示删除失败，显示出错误信息
+            }else {
               message.error(data.message);
             }
           });
@@ -383,6 +412,7 @@ export default defineComponent({
       editor.create();
     });
 
+    //返回值
     return {
       param,
       // docs,

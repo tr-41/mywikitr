@@ -3,20 +3,21 @@ package com.zhuanye.wiki.domain;
 import java.util.Date;
 
 public class EbookSnapshot {
+    //电子书快照ID
     private Long id;
-
+    //电子书ID
     private Long ebookId;
-
+    //电子书快照的日期
     private Date date;
-
+    //电子书阅读数
     private Integer viewCount;
-
+    //电子书点赞数
     private Integer voteCount;
-
+    //电子书的阅读增长
     private Integer viewIncrease;
-
+    //电子书的点赞增长
     private Integer voteIncrease;
-
+    //电子书快照的Getter和Setter函数
     public Long getId() {
         return id;
     }
@@ -73,6 +74,7 @@ public class EbookSnapshot {
         this.voteIncrease = voteIncrease;
     }
 
+    //电子书快照的toString()函数
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

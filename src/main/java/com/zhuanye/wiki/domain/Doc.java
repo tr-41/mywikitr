@@ -1,20 +1,22 @@
 package com.zhuanye.wiki.domain;
 
 public class Doc {
+    //文档ID
     private Long id;
-
+    //电子书ID
     private Long ebookId;
-
+    //文档父ID
     private Long parent;
-
+    //文档名称
     private String name;
-
+    //文档分类
     private Integer sort;
-
+    //文档阅读数
     private Integer viewCount;
-
+    //文档点赞数
     private Integer voteCount;
 
+    //文档类的Getter和Setter函数
     public Long getId() {
         return id;
     }
@@ -71,6 +73,7 @@ public class Doc {
         this.voteCount = voteCount;
     }
 
+    //文档类的toString()函数
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

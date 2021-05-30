@@ -22,6 +22,11 @@ create table `ebook` (
   primary key (`id`)
 ) engine=innodb default charset=utf8mb4 comment='电子书';
 
+ALTER TABLE ebook
+ADD CONSTRAINT FK_Role2 FOREIGN KEY (category1_id) references category(id);
+ALTER TABLE ebook
+ADD CONSTRAINT FK_Role3 FOREIGN KEY (category2_id) references category(id);
+
 insert into `ebook` (id, name, description) values (1, 'Spring Boot 入门教程', '零基础入门 Java 开发，企业级应用开发最佳首选框架');
 insert into `ebook` (id, name, description) values (2, 'Vue 入门教程', '零基础入门 Vue 开发，企业级应用开发最佳首选框架');
 insert into `ebook` (id, name, description) values (3, 'Python 入门教程', '零基础入门 Python 开发，企业级应用开发最佳首选框架');
@@ -79,6 +84,9 @@ create table `doc` (
   primary key (`id`)
 ) engine=innodb default charset=utf8mb4 comment='文档';
 
+ALTER TABLE doc
+ADD CONSTRAINT FK_Role FOREIGN KEY (ebook_id) references ebook(id);
+
 insert into `doc` (id, ebook_id, parent, name, sort, view_count, vote_count) values (1, 1, 0, '文档1', 1, 0, 0);
 insert into `doc` (id, ebook_id, parent, name, sort, view_count, vote_count) values (2, 1, 1, '文档1.1', 1, 0, 0);
 insert into `doc` (id, ebook_id, parent, name, sort, view_count, vote_count) values (3, 1, 0, '文档2', 2, 0, 0);
@@ -93,6 +101,9 @@ create table `content` (
   `content` mediumtext not null comment '内容',
   primary key (`id`)
 ) engine=innodb default charset=utf8mb4 comment='文档内容';
+
+ALTER TABLE content
+ADD CONSTRAINT FK_Role4 FOREIGN KEY (id) references doc(id);
 
 -- 用户表
 drop table if exists `user`;
@@ -121,6 +132,9 @@ create table `ebook_snapshot` (
   unique key `ebook_id_date_unique` (`ebook_id`, `date`)
 ) engine=innodb default charset=utf8mb4 comment='电子书快照表';
 
+ALTER TABLE ebook_snapshot
+ADD CONSTRAINT FK_Role1 FOREIGN KEY ebook_snapshot(ebook_id) references ebook(id);
+
 -- 用户编辑文档表
 drop table if exists `doc_edit`;
 create table `doc_edit` (
@@ -131,6 +145,22 @@ create table `doc_edit` (
      primary key (`user_id`,`word_id`),
      unique key `user_id_word_id_unique` (`user_id`, `word_id`)
 ) engine=innodb default charset=utf8mb4 comment='用户编辑文档表';
+
+-- 用户编辑文档表
+drop table if exists `doc_delete`;
+create table `doc_delete` (
+     `user_id` bigint not null comment '用户id',
+     `word_id` bigint not null comment '文档id',
+     `username` varchar(50) not null comment '用户名',
+     `wordname` varchar(50) not null comment '文档名',
+      primary key (`user_id`,`word_id`),
+      unique key `user_id_word_id_unique` (`user_id`, `word_id`)
+) engine=innodb default charset=utf8mb4 comment='用户删除文档表';
+
+ALTER TABLE doc_edit
+ADD CONSTRAINT FK_Role5 FOREIGN KEY doc_edit(user_id) references user(id);
+ALTER TABLE doc_edit
+ADD CONSTRAINT FK_Role6 FOREIGN KEY doc_edit(word_id) references doc(id);
 
 -- 管理员表
 drop table if exists `manager`;

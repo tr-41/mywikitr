@@ -79,6 +79,8 @@ public class UserService {
             if (ObjectUtils.isEmpty(userDB)) {
                 // 新增
                 user.setId(snowFlake.nextId());
+                user.setBlock(false);
+                user.setLevel(false);
                 userMapper.insert(user);
             } else {
                 // 用户名已存在

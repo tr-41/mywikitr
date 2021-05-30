@@ -1,12 +1,13 @@
 package com.zhuanye.wiki.domain;
 
 public class Manager {
+    //管理员ID
     private Long managerId;
-
+    //管理员名称
     private String name;
-
+    //管理员密码
     private String password;
-
+    //管理员的Getter和Setter函数
     public Long getManagerId() {
         return managerId;
     }
@@ -30,7 +31,7 @@ public class Manager {
     public void setPassword(String password) {
         this.password = password;
     }
-
+    //管理员的toString()函数
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

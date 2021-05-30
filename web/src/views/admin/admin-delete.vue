@@ -6,22 +6,6 @@
       <p>
         <a-form layout="inline" :model="param">
           <a-form-item>
-            <a-input v-model:value="param.userId" placeholder="用户ID">
-            </a-input>
-          </a-form-item>
-<!--          <a-form-item>-->
-<!--            <a-button type="primary" @click="handleQuery({page: 1, size: pagination.pageSize})">-->
-<!--              查询-->
-<!--            </a-button>-->
-<!--          </a-form-item>-->
-        </a-form>
-
-        <a-form layout="inline" :model="param">
-          <a-form-item>
-            <a-input v-model:value="param.wordId" placeholder="文档ID">
-            </a-input>
-          </a-form-item>
-          <a-form-item>
             <a-button type="primary" @click="handleQuery({page: 1, size: pagination.pageSize})">
               查询
             </a-button>
@@ -95,7 +79,7 @@
         // 如果不清空现有数据，则编辑保存重新加载数据后，再点编辑，则列表显示的还是编辑前的数据
         users.value = [];
         //集成axios发送查询请求
-        axios.get("/tanrui/list", {
+        axios.get("/mydelete/list", {
           //设置请求参数
           params: {
             page: params.page,

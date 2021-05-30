@@ -1,26 +1,24 @@
-package com.zhuanye.wiki.domain;
+package com.zhuanye.wiki.req;
 
-public class DocEdit {
-    //文档编辑记录的用户ID
+public class DocDeleteQueryReq extends PageReq{
     private Long userId;
-    //文档编辑记录中被编辑的文档的文档ID
+
     private Long wordId;
-    //编辑文档的用户名称
+
     private String username;
-    //被编辑文档的文档名称
+
     private String wordname;
 
-    //文档编辑类的无参构造函数
-    public DocEdit() {
+    public DocDeleteQueryReq() {
     }
-    //文档编辑类的有参构造函数
-    public DocEdit(Long userId, Long wordId, String username, String wordname) {
+
+    public DocDeleteQueryReq(Long userId, Long wordId, String username, String wordname) {
         this.userId = userId;
         this.wordId = wordId;
         this.username = username;
         this.wordname = wordname;
     }
-    //文档编辑类的Getter()和Settter()函数
+
     public Long getUserId() {
         return userId;
     }
@@ -53,7 +51,6 @@ public class DocEdit {
         this.wordname = wordname;
     }
 
-    //文档编辑类的toString()函数
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

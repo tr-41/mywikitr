@@ -27,6 +27,7 @@ public class WebSocketServer {
      */
     @OnOpen
     public void onOpen(Session session, @PathParam("token") String token) {
+        System.out.println("**********************************WebSocketServer连接成功！");
         map.put(token, session);
         this.token = token;
         LOG.info("有新连接：token：{}，session id：{}，当前连接数：{}", token, session.getId(), map.size());
@@ -37,6 +38,7 @@ public class WebSocketServer {
      */
     @OnClose
     public void onClose(Session session) {
+        System.out.println("**********************************WebSocketServer连接关闭！");
         map.remove(this.token);
         LOG.info("连接关闭，token：{}，session id：{}！当前连接数：{}", this.token, session.getId(), map.size());
     }
@@ -46,6 +48,7 @@ public class WebSocketServer {
      */
     @OnMessage
     public void onMessage(String message, Session session) {
+        System.out.println("**********************************WebSocketServer收到消息！");
         LOG.info("收到消息：{}，内容：{}", token, message);
     }
 
@@ -54,6 +57,7 @@ public class WebSocketServer {
      */
     @OnError
     public void onError(Session session, Throwable error) {
+        System.out.println("**********************************WebSocketServer连接错误！");
         LOG.error("发生错误", error);
     }
 
@@ -61,6 +65,7 @@ public class WebSocketServer {
      * 群发消息
      */
     public void sendInfo(String message) {
+        System.out.println("**********************************WebSocketServer群发消息！");
         for (String token : map.keySet()) {
             Session session = map.get(token);
             try {

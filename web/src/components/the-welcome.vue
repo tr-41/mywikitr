@@ -116,10 +116,15 @@
     setup () {
       const statistic = ref();
       statistic.value = {};
+      //获取统计数据
       const getStatistic = () => {
+        //集成axios发送统计数据请求
         axios.get('/ebook-snapshot/get-statistic').then((response) => {
+          //获得返回值数据
           const data = response.data;
+          //如果data.success为true，表示查询成功，即显示出文档信息
           if (data.success) {
+            //显示出网站的点赞量、阅读量等信息
             const statisticResp = data.content;
             statistic.value.viewCount = statisticResp[1].viewCount;
             statistic.value.voteCount = statisticResp[1].voteCount;
@@ -131,15 +136,17 @@
             const nowRate = (now.getHours() * 60 + now.getMinutes()) / (60 * 24);
             // console.log(nowRate)
             statistic.value.todayViewIncrease = parseInt(String(statisticResp[1].viewIncrease / nowRate));
-            // todayViewIncreaseRate：今日预计增长率
+            // 计算todayViewIncreaseRate：今日预计增长率
             statistic.value.todayViewIncreaseRate = (statistic.value.todayViewIncrease - statisticResp[0].viewIncrease) / statisticResp[0].viewIncrease * 100;
             statistic.value.todayViewIncreaseRateAbs = Math.abs(statistic.value.todayViewIncreaseRate);
+            //如果data.success为false,表示查询失败，显示出错误信息
           }else{
             message.error(data.message);
           }
         });
       };
 
+      //集成30天的报表
       const init30DayEcharts = (list: any) => {
         // 发布生产后出现问题：切到别的页面，再切回首页，报表显示不出来
         // 解决方法：把原来的id=main的区域清空，重新初始化
@@ -212,12 +219,16 @@
         myChart.setOption(option);
       };
 
+      //获取网站30天内的数据
       const get30DayStatistic = () => {
+        //集成axios发送请求
         axios.get('/ebook-snapshot/get-30-statistic').then((response) => {
+         //获得返回值
           const data = response.data;
+          //如果data.success为true，表示查询成功，即显示出统计数据
           if (data.success) {
             const statisticList = data.content;
-
+            //嵌入报表
             init30DayEcharts(statisticList)
           }
         });
@@ -257,6 +268,7 @@
         get30DayStatistic();
       });
 
+      //返回值
       return {
         statistic
       }

@@ -1,18 +1,19 @@
 package com.zhuanye.wiki.domain;
 
 public class User {
+    //用户ID
     private Long id;
-
+    //用户登录名
     private String loginName;
-
+    //用户名称
     private String name;
-
+    //用户登录密码
     private String password;
-
+    //用户是否为系统拉黑用户
     private Boolean block;
-
+    //用户是否达到系统有效编辑级别
     private Boolean level;
-
+    //用户类的Getter和Setter函数
     public Long getId() {
         return id;
     }
@@ -60,7 +61,7 @@ public class User {
     public void setLevel(Boolean level) {
         this.level = level;
     }
-
+    //用户类的toString()函数
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

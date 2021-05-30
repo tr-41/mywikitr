@@ -1,10 +1,12 @@
 package com.zhuanye.wiki.domain;
 
 public class Content {
+    //文档内容ID
     private Long id;
-
+    //文档内容
     private String content;
 
+    //文档内容的Getter和Setter()函数
     public Long getId() {
         return id;
     }
@@ -21,6 +23,7 @@ public class Content {
         this.content = content;
     }
 
+    //文档内容的toString()函数
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

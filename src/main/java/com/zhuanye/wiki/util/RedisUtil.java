@@ -13,6 +13,7 @@ public class RedisUtil {
 
     private static final Logger LOG = LoggerFactory.getLogger(RedisUtil.class);
 
+    //redis
     @Resource
     private RedisTemplate redisTemplate;
 
@@ -23,6 +24,7 @@ public class RedisUtil {
      * @param second
      * @return
      */
+    //做一个校验，看看是否点赞过了
     public boolean validateRepeat(String key, long second) {
         if (redisTemplate.hasKey(key)) {
             LOG.info("key已存在：{}", key);

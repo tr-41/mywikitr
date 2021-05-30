@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--这个mapper指定一个唯一的namespace，它习惯上设置为:“包名+sql映射文件名”，这样可以保证名称的唯一。-->
 <mapper namespace="com.zhuanye.wiki.mapper.UserMapper">
+<!--  ResultMap是Mybatis最强大的元素，它可以将查询到的复杂数据（比如查询到几个表中数据）映射到一个结果集当中。-->
   <resultMap id="BaseResultMap" type="com.zhuanye.wiki.domain.User">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="login_name" jdbcType="VARCHAR" property="loginName" />
@@ -9,22 +11,34 @@
     <result column="block" jdbcType="BIT" property="block" />
     <result column="level" jdbcType="BIT" property="level" />
   </resultMap>
+  <!-- 查询条件-->
   <sql id="Example_Where_Clause">
     <where>
+      <!-- 条件集合 -->
+      <!-- 传入集合类型是oredCriteria 循环变量是criteria 关系是或者-->
       <foreach collection="oredCriteria" item="criteria" separator="or">
+        <!-- 如果传入的条件有效-->
         <if test="criteria.valid">
+          <!-- <修剪前缀= "("后缀= ")"前缀覆盖 = "和" > -->
           <trim prefix="(" prefixOverrides="and" suffix=")">
+            <!-- 条件集合 -->
+            <!-- 集合类型是oredCriteria 循环变量是criteria -->
             <foreach collection="criteria.criteria" item="criterion">
+              <!-- 通过判断选择条件-->
               <choose>
+                <!-- 当条件不符合标准的时候 -->
                 <when test="criterion.noValue">
                   and ${criterion.condition}
                 </when>
+                <!-- 条件是一个值的时候 调用此条件-->
                 <when test="criterion.singleValue">
                   and ${criterion.condition} #{criterion.value}
                 </when>
+                <!-- 条件是两个值的时候 调用此条件 -->
                 <when test="criterion.betweenValue">
                   and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
                 </when>
+                <!-- 如果条件是一个集合的话调用此条件 -->
                 <when test="criterion.listValue">
                   and ${criterion.condition}
                   <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
@@ -38,22 +52,36 @@
       </foreach>
     </where>
   </sql>
+  <!-- 更新条件-->
   <sql id="Update_By_Example_Where_Clause">
+    <!-- 条件 -->
     <where>
+      <!-- 条件集合 -->
+      <!-- 传入集合类型是oredCriteria 循环变量是criteria 关系是或者-->
       <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <!-- 如果传入的条件有效-->
         <if test="criteria.valid">
+          <!-- <修剪前缀= "("后缀= ")"前缀覆盖 = "和" > -->
           <trim prefix="(" prefixOverrides="and" suffix=")">
+            <!-- 条件集合 -->
+            <!-- 集合类型是oredCriteria 循环变量是criteria -->
             <foreach collection="criteria.criteria" item="criterion">
+              <!-- 通过判断选择条件-->
               <choose>
+                <!-- 通过判断标准来执行对应的查询条件 -->
+                <!-- 当条件不符合标准的时候 -->
                 <when test="criterion.noValue">
                   and ${criterion.condition}
                 </when>
+                <!-- 条件是一个值的时候 调用此条件 -->
                 <when test="criterion.singleValue">
                   and ${criterion.condition} #{criterion.value}
                 </when>
+                <!-- 条件是两个值的时候 调用此条件 -->
                 <when test="criterion.betweenValue">
                   and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
                 </when>
+                <!-- 如果条件是一个集合的话调用此条件 -->
                 <when test="criterion.listValue">
                   and ${criterion.condition}
                   <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
@@ -67,45 +95,58 @@
       </foreach>
     </where>
   </sql>
+  <!-- 表中的字段值 -->
   <sql id="Base_Column_List">
     id, login_name, `name`, `password`, block, `level`
   </sql>
+  <!--按条件查询-->
   <select id="selectByExample" parameterType="com.zhuanye.wiki.domain.UserExample" resultMap="BaseResultMap">
     select
+    <!--这里的distinct是参数实体类中Boolean类型的参数,通过设置参数的true或者false来决定去不去重!-->
     <if test="distinct">
       distinct
     </if>
+    <!--相当于将id为Base_Column_List的字段粘贴过来-->
     <include refid="Base_Column_List" />
     from user
+    <!--判断_parameter参数不为空，即相当于将id为Example_Where_Clause的代码粘贴过来-->
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
+    <!--判断orderByClause参数不为空，按照orderByClause排序-->
     <if test="orderByClause != null">
       order by ${orderByClause}
     </if>
   </select>
+  <!--  按照主键进行查询-->
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
+    select
+    <!--相当于将id为Base_Column_List的字段粘贴过来-->
     <include refid="Base_Column_List" />
     from user
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <!--  按主键删除-->
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from user
     where id = #{id,jdbcType=BIGINT}
   </delete>
+  <!--  按条件删除-->
   <delete id="deleteByExample" parameterType="com.zhuanye.wiki.domain.UserExample">
     delete from user
+    <!--判断_parameter参数不为空，即相当于将id为Example_Where_Clause的代码粘贴过来-->
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
+  <!--  插入数据-->
   <insert id="insert" parameterType="com.zhuanye.wiki.domain.User">
     insert into user (id, login_name, `name`, 
       `password`, block, `level`)
     values (#{id,jdbcType=BIGINT}, #{loginName,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{password,jdbcType=CHAR}, #{block,jdbcType=BIT}, #{level,jdbcType=BIT})
   </insert>
+  <!-- 插入方法自动判断有没有参数 没有参数也不会报错 -->
   <insert id="insertSelective" parameterType="com.zhuanye.wiki.domain.User">
     insert into user
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -149,12 +190,15 @@
       </if>
     </trim>
   </insert>
+  <!-- 查询表中的记录数 -->
   <select id="countByExample" parameterType="com.zhuanye.wiki.domain.UserExample" resultType="java.lang.Long">
     select count(*) from user
+    <!--判断_parameter参数不为空，不为空即相当于将id为Example_Where_Clause的代码粘贴过来-->
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
+  <!-- 按照条件进行更新,该方法自动判断有没有参数 没有参数也不会报错 -->
   <update id="updateByExampleSelective" parameterType="map">
     update user
     <set>
@@ -177,10 +221,12 @@
         `level` = #{record.level,jdbcType=BIT},
       </if>
     </set>
+    <!--判断_parameter参数不为空，不为空即相当于将id为Update_By_Example_Where_Clause的代码粘贴过来-->
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
+  <!--  按条件更新-->
   <update id="updateByExample" parameterType="map">
     update user
     set id = #{record.id,jdbcType=BIGINT},
@@ -189,10 +235,12 @@
       `password` = #{record.password,jdbcType=CHAR},
       block = #{record.block,jdbcType=BIT},
       `level` = #{record.level,jdbcType=BIT}
+    <!--判断_parameter参数不为空，不为空即相当于将id为Update_By_Example_Where_Clause的代码粘贴过来-->
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
+  <!-- 按主键更新值不为null的字段-->
   <update id="updateByPrimaryKeySelective" parameterType="com.zhuanye.wiki.domain.User">
     update user
     <set>
@@ -214,6 +262,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <!-- 按主键更新字段-->
   <update id="updateByPrimaryKey" parameterType="com.zhuanye.wiki.domain.User">
     update user
     set login_name = #{loginName,jdbcType=VARCHAR},

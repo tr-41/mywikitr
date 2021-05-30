@@ -73,9 +73,13 @@
        **/
       const handleQueryContent = (id: number) => {
         axios.get("/doc/find-content/" + id).then((response) => {
+          //获得返回值
           const data = response.data;
+          //如果data.success为true，表示查询成功，即显示出文档内容
           if (data.success) {
             html.value = data.content;
+            message.success("欢迎阅读！");
+            //如果data.success为false,表示查询失败，显示出错误信息
           } else {
             message.error(data.message);
           }
@@ -87,8 +91,11 @@
        **/
       const handleQuery = () => {
         axios.get("/doc/all/" + route.query.ebookId).then((response) => {
+          //获得返回值
           const data = response.data;
+          //如果data.success为true，表示查询成功，即显示出文档信息
           if (data.success) {
+            //查询文档信息成功
             docs.value = data.content;
 
             level1.value = [];
@@ -100,6 +107,7 @@
               // 初始显示文档信息
               doc.value = level1.value[0];
             }
+            //如果data.success为false,表示查询失败，显示出错误信息
           } else {
             message.error(data.message);
           }
@@ -119,9 +127,13 @@
       // 点赞
       const vote = () => {
         axios.get('/doc/vote/' + doc.value.id).then((response) => {
+          //获得返回值
           const data = response.data;
+          //如果data.success为true，表示查询成功，即显示出文档信息
           if (data.success) {
+            //该文档的点赞数加1
             doc.value.voteCount++;
+            //如果data.success为false,表示查询失败，显示出错误信息
           } else {
             message.error(data.message);
           }
@@ -132,6 +144,7 @@
         handleQuery();
       });
 
+      //返回值
       return {
         level1,
         html,

@@ -21,6 +21,9 @@
       <a-menu-item key="/admin/tanrui" :style="user.id? {} : {display:'none'}">
         <router-link to="/admin/tanrui">谭睿的模块</router-link>
       </a-menu-item>
+      <a-menu-item key="/admin/delete" :style="user.id? {} : {display:'none'}">
+        <router-link to="/admin/delete">删除记录查询</router-link>
+      </a-menu-item>
       <a-menu-item key="/about">
         <router-link to="/about">关于我们</router-link>
       </a-menu-item>

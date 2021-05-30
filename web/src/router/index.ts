@@ -7,6 +7,7 @@ import AdminEbook from '../views/admin/admin-ebook.vue'
 import AdminCategory from '../views/admin/admin-category.vue'
 import AdminDoc from '../views/admin/admin-doc.vue'
 import AdminTanrui from '../views/admin/admin-tanrui.vue'
+import AdminDelete from '../views/admin/admin-delete.vue'
 import store from "@/store";
 import {Tool} from "@/util/tool";
 
@@ -66,6 +67,14 @@ const routes: Array<RouteRecordRaw> = [
     path: '/admin/tanrui',
     name: 'AdminTanrui',
     component: AdminTanrui,
+    meta: {
+      loginRequire: true
+    }
+  },
+  {
+    path: '/admin/delete',
+    name: 'AdminDelete',
+    component: AdminDelete,
     meta: {
       loginRequire: true
     }

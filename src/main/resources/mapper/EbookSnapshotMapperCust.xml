@@ -54,7 +54,7 @@
         order by
             t1.`date` asc;
     </select>
-
+    <!--获取wiki知识库系统30天内的点赞量、阅读量等相关信息-->
     <select id="get30Statistic" resultType="com.zhuanye.wiki.resp.StatisticResp">
         select
             t1.`date` as `date`,
